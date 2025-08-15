@@ -1,0 +1,140 @@
+/* Call Center Comfort Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Background Layers - Soft, warm neutrals */
+  --bg-primary: #FAFAF8;        /* Warm off-white (not harsh white) */
+  --bg-secondary: #F5F5F0;      /* Soft cream */
+  --bg-tertiary: #EDEDEA;       /* Light warm gray */
+  
+  /* Text - High contrast but soft */
+  --text-primary: #2D3436;      /* Soft charcoal (not pure black) */
+  --text-secondary: #636E72;    /* Medium gray */
+  --text-tertiary: #95A5A6;     /* Light gray */
+  
+  /* Accent - Calming blue-greens */
+  --accent-primary: #5F9EA0;    /* Cadet blue (calming) */
+  --accent-secondary: #7FB3B5;  /* Lighter cadet blue */
+  --accent-hover: #4A8789;      /* Darker for hover states */
+  
+  /* Interactive Elements */
+  --button-bg: #E8F4F5;          /* Very light cyan */
+  --button-border: #B8D4D5;      /* Soft cyan border */
+  --button-text: #2D3436;        /* Same as primary text */
+  --button-hover: #D8E9EA;       /* Slightly darker on hover */
+  
+  /* Status Colors (Muted versions) */
+  --status-success: #81C784;     /* Soft green */
+  --status-warning: #FFB74D;     /* Soft orange */
+  --status-error: #E57373;       /* Soft red */
+  --status-info: #64B5F6;        /* Soft blue */
+  
+  /* Backgrounds for Status */
+  --bg-success: #E8F5E9;         /* Very light green */
+  --bg-warning: #FFF3E0;         /* Very light orange */
+  --bg-error: #FFEBEE;           /* Very light red */
+  --bg-info: #E3F2FD;            /* Very light blue */
+  
+  /* Shadows and Effects */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+  
+  /* Typography */
+  --font-primary: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  --font-mono: 'Fira Code', 'Consolas', monospace;
+  
+  /* Font Sizes - Slightly Larger */
+  --text-xs: 0.8125rem;   /* 13px */
+  --text-sm: 0.9375rem;   /* 15px */
+  --text-base: 1.0625rem; /* 17px */
+  --text-lg: 1.25rem;     /* 20px */
+  --text-xl: 1.5rem;      /* 24px */
+  
+  /* Line Heights - More Spacing */
+  --leading-tight: 1.35;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1E2329;        /* Dark blue-gray */
+    --bg-secondary: #262B33;      /* Slightly lighter */
+    --bg-tertiary: #2E343C;       /* Panel background */
+    
+    --text-primary: #E4E6EB;      /* Soft white */
+    --text-secondary: #B0B3B8;    /* Light gray */
+    --text-tertiary: #8A8D91;     /* Medium gray */
+    
+    --accent-primary: #5F9EA0;    /* Keep cadet blue */
+    --accent-secondary: #7FB3B5;
+    
+    --button-bg: #2E343C;
+    --button-border: #3E444C;
+  }
+}
+
+/* Global Styles */
+body {
+  font-family: var(--font-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+  font-size: var(--text-base);
+}
+
+/* Apply theme globally */
+* {
+  transition: background-color var(--transition-base),
+              border-color var(--transition-base),
+              box-shadow var(--transition-base),
+              transform var(--transition-base);
+}
+
+/* Button interactions */
+.action-button {
+  transition: all var(--transition-base);
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(95, 158, 160, 0.15);
+}
+
+.action-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(95, 158, 160, 0.1);
+}
+
+/* Focus States */
+input:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(95, 158, 160, 0.2);
+  border-color: var(--accent-primary);
+}
+
+/* Responsive adjustments for call center viewing distance */
+@media (min-width: 1024px) {
+  html {
+    font-size: 17px; /* Slightly larger base */
+  }
+  
+  .customer-card {
+    max-width: 900px; /* Wider for easier scanning */
+    margin: 2rem auto;
+  }
+}

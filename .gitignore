@@ -39,3 +39,36 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Supabase
+.env.local
+.env.production
+
+# Test reports and screenshots
+/test-results/
+/playwright-report/
+/coverage/
+screenshots/
+error-reports/
+
+# Development artifacts
+correction_report.md
+color-palette.md
+
+# IDE and system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime files
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/
