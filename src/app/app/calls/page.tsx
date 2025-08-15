@@ -65,7 +65,7 @@ export default function CallsPage() {
         if (!acc[call.customer_id]) acc[call.customer_id] = []
         acc[call.customer_id].push(call)
         return acc
-      }, {} as Record<string, any[]>)
+      }, {} as Record<string, unknown[]>)
 
       // Convert to frontend format
       const formattedCustomers: Customer[] = (customersData || []).map(customer => {
@@ -290,7 +290,7 @@ export default function CallsPage() {
                 : 'text-gray-600 hover:bg-white hover:shadow-sm'
             }`}
           >
-            Today's Callbacks ({customers.filter(c => c.status === 'callback' && c.callbackDate === new Date().toISOString().split('T')[0]).length})
+            Today&apos;s Callbacks ({customers.filter(c => c.status === 'callback' && c.callbackDate === new Date().toISOString().split('T')[0]).length})
           </button>
         </div>
       </div>
