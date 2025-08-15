@@ -98,13 +98,21 @@ export function CustomerCardClean({
         <div className="flex justify-between items-start mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">{customer.name}</h1>
-            <div className="flex items-center gap-6 text-gray-600">
+            <div className="flex items-center gap-6 text-gray-600 mb-2">
               <span>ID: {customer.id.slice(-8)}</span>
               <span>{formatPhoneNumber(customer.phone)}</span>
               <span>{customer.city}, {customer.province || 'Dubai'}</span>
               <span className="text-lg font-semibold text-[#886baa]">
                 {formatCurrency(customer.netValue, customer.currency)}
               </span>
+            </div>
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <span>Contact: {customer.contactPerson || customer.name}</span>
+              <span>{customer.salesType || 'RETAIL'}</span>
+              <span>{customer.noOfPurchases || 0} orders</span>
+              {customer.lastPurchaseDate && (
+                <span>Last purchase: {new Date(customer.lastPurchaseDate).toLocaleDateString('en-GB')}</span>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -113,8 +121,8 @@ export function CustomerCardClean({
           </div>
         </div>
 
-        {/* Top Bar with Status, Call History, and Customer Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-6 border-t border-gray-200">
+        {/* Top Bar with Status and Call History */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t border-gray-200">
           
           {/* Customer Status */}
           <div>
@@ -135,15 +143,6 @@ export function CustomerCardClean({
                 Callback: {customer.callbackDate}
               </div>
             )}
-          </div>
-
-          {/* Customer Details */}
-          <div>
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Details</h4>
-            <div className="text-sm text-gray-600">
-              <div>{customer.contactPerson || customer.name}</div>
-              <div>{customer.salesType || 'RETAIL'} • {customer.noOfPurchases || 0} orders</div>
-            </div>
           </div>
 
           {/* Call History Toggle */}
