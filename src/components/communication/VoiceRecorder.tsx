@@ -98,30 +98,38 @@ export function VoiceRecorder({ customerId, onRecordingComplete }: VoiceRecorder
   const uploadToSupabase = async (blob: Blob) => {
     setIsUploading(true)
     try {
-      const fileName = `${customerId}_${Date.now()}.webm`
+      // Convert blob to base64 for database storage
+      const arrayBuffer = await blob.arrayBuffer()
+      const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
       
-      const { data, error } = await supabase.storage
-        .from('voice-memos')
-        .upload(fileName, blob, {
-          contentType: 'audio/webm',
-          upsert: false
+      // Get user ID from localStorage
+      const userId = localStorage.getItem('userId') || 'unknown'
+      
+      // Save voice memo to database
+      const { data, error } = await supabase
+        .from('sco_voice_memos')
+        .insert({
+          customer_id: customerId,
+          user_id: userId,
+          audio_data: base64,
+          content_type: 'audio/webm',
+          created_at: new Date().toISOString()
         })
+        .select()
 
       if (error) {
-        console.error('Upload error:', error)
-        alert('Failed to upload voice memo. It will be saved locally.')
+        console.error('Database error:', error)
+        alert('Failed to save voice memo to database. Saved locally only.')
         return
       }
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('voice-memos')
-        .getPublicUrl(fileName)
-
-      onRecordingComplete(publicUrl)
+      console.log('Voice memo saved successfully:', data)
+      onRecordingComplete('database_saved')
+      alert('Voice memo saved successfully!')
       
     } catch (error) {
-      console.error('Upload error:', error)
+      console.error('Save error:', error)
+      alert('Failed to save voice memo. Please try again.')
     } finally {
       setIsUploading(false)
     }

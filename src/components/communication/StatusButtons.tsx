@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { CallbackDialog } from './CallbackDialog'
-import { ConfirmDialog } from './ConfirmDialog'
+import { CallbackDialog } from '../workflow-orchestration/CallbackDialog'
+import { ConfirmDialog } from '../workflow-orchestration/ConfirmDialog'
 
 interface StatusButtonsProps {
   onAction: (data: {

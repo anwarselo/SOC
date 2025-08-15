@@ -1,8 +1,8 @@
 'use client'
 
-import { AppTopbar } from '@/components/AppTopbar'
-import { CopyBlocker } from '@/components/CopyBlocker'
-import { FontSelector } from '@/components/FontSelector'
+import { AppTopbar } from '@/components/system-foundation/AppTopbar'
+import { CopyBlocker } from '@/components/system-foundation/CopyBlocker'
+import { FontSelector } from '@/components/user-experience/FontSelector'
 
 export default function AppLayout({
   children,

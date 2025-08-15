@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { CallbackDialog } from '../CallbackDialog'
+import { CallbackDialog } from '../workflow-orchestration/CallbackDialog'
 
 describe('CallbackDialog', () => {
   const mockOnSave = jest.fn()

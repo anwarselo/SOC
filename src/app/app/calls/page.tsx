@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { CustomerCard } from '@/components/CustomerCard'
+import { CustomerCardClean } from '@/components/customer-engagement/CustomerCardClean'
 import { supabase } from '@/lib/supabase'
 
 interface Customer {
@@ -65,7 +65,7 @@ export default function CallsPage() {
         if (!acc[call.customer_id]) acc[call.customer_id] = []
         acc[call.customer_id].push(call)
         return acc
-      }, {} as Record<string, any[]>)
+      }, {} as Record<string, unknown[]>)
 
       // Convert to frontend format
       const formattedCustomers: Customer[] = (customersData || []).map(customer => {
@@ -268,55 +268,34 @@ export default function CallsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Professional Filter Tabs */}
-      <div className="flex justify-center">
-        <div className="flex gap-2 bg-white/90 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-[#e3d8eb]">
+    <div className="min-h-screen bg-gray-50 py-8">
+      {/* Simplified Filter Tabs */}
+      <div className="flex justify-center mb-12">
+        <div className="flex gap-1 bg-white rounded-lg p-1 shadow-sm border border-gray-200">
           <button
             onClick={() => handleViewChange('pending')}
-            className={`relative px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform ${
+            className={`px-6 py-3 rounded-md font-medium transition-all ${
               view === 'pending'
-                ? 'bg-gradient-to-r from-[#886baa] to-[#543b73] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5'
-                : 'text-[#8a4a62] hover:text-[#543b73] hover:bg-[#e3d8eb]/50 hover:shadow-md'
+                ? 'bg-[#886baa] text-white shadow-sm'
+                : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
-            <span className="relative z-10 flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-              </svg>
-              New Customers
-              <span className="text-sm opacity-80">/ عملاء جدد</span>
-            </span>
-            {view === 'pending' && (
-              <div className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-            )}
+            New Customers
           </button>
           <button
             onClick={() => handleViewChange('callbacks')}
-            className={`relative px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform ${
+            className={`px-6 py-3 rounded-md font-medium transition-all ${
               view === 'callbacks'
-                ? 'bg-gradient-to-r from-[#e17553] to-[#8a4a62] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5'
-                : 'text-[#8a4a62] hover:text-[#543b73] hover:bg-[#e3d8eb]/50 hover:shadow-md'
+                ? 'bg-[#886baa] text-white shadow-sm'
+                : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
-            <span className="relative z-10 flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              Today&apos;s Callbacks
-              <span className="bg-white/30 px-2 py-0.5 rounded-full text-xs font-bold">
-                {customers.filter(c => c.status === 'callback' && c.callbackDate === new Date().toISOString().split('T')[0]).length}
-              </span>
-              <span className="text-sm opacity-80">/ مكالمات اليوم</span>
-            </span>
-            {view === 'callbacks' && (
-              <div className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-            )}
+            Today&apos;s Callbacks ({customers.filter(c => c.status === 'callback' && c.callbackDate === new Date().toISOString().split('T')[0]).length})
           </button>
         </div>
       </div>
 
-      <CustomerCard
+      <CustomerCardClean
         customer={currentCustomer}
         view={view}
         onStatusChange={handleStatusChange}

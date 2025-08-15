@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { EmptyState } from '../EmptyState'
+import { EmptyState } from '../workflow-orchestration/EmptyState'
 
 describe('EmptyState', () => {
   it('shows pending message for pending view', () => {

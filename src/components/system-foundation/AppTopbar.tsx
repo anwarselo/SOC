@@ -13,12 +13,6 @@ export function AppTopbar() {
         subtitle: 'System administration and management / إدارة النظام والإشراف'
       }
     }
-    if (pathname === '/app/reports') {
-      return {
-        title: 'Sales Reports',
-        subtitle: 'Call history and performance analytics / تقارير المبيعات وتحليل الأداء'
-      }
-    }
     // Default for calls and other pages
     return {
       title: 'SedarOutreach',
