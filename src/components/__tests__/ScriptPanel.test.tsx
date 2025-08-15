@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { ScriptPanel } from '../ScriptPanel'
+import { ScriptPanel } from '../customer-engagement/ScriptPanel'
 
 describe('ScriptPanel', () => {
   it('shows initial outreach script for pending status', () => {

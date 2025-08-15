@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import GlobalErrorBoundary from '@/components/GlobalErrorBoundary'
+import GlobalErrorBoundary from '@/components/system-foundation/GlobalErrorBoundary'
 
 const inter = Inter({ subsets: ['latin'] })
 

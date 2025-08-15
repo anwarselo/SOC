@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { ErrorReporter } from '../ErrorReporter'
+import { ErrorReporter } from '../system-foundation/ErrorReporter'
 
 // Mock fetch
 global.fetch = jest.fn()

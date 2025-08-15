@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { CommentsBox } from '../CommentsBox'
+import { CommentsBox } from '../communication/CommentsBox'
 
 describe('CommentsBox', () => {
   const mockOnChange = jest.fn()

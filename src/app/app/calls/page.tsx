@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { CustomerCardClean } from '@/components/CustomerCardClean'
+import { CustomerCardClean } from '@/components/customer-engagement/CustomerCardClean'
 import { supabase } from '@/lib/supabase'
 
 interface Customer {

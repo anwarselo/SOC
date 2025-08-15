@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { StatusButtons } from '../StatusButtons'
+import { StatusButtons } from '../communication/StatusButtons'
 
 describe('StatusButtons', () => {
   const mockOnAction = jest.fn()
