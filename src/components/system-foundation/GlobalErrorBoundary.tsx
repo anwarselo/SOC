@@ -37,14 +37,21 @@ class GlobalErrorBoundary extends Component<Props, State> {
   reportError = async (error: Error, errorInfo: ErrorInfo) => {
     try {
       // Use the global error reporting function if available
-      const reportError = (window as any).__reportError
+      const reportError = (window as unknown as Record<string, unknown>).__reportError as (errorData: Partial<{
+        errorType: string;
+        message: string;
+        errorStack?: string;
+        errorComponent?: string;
+        browserInfo?: Record<string, unknown>;
+        pageState?: Record<string, unknown>;
+      }>) => Promise<void>
       
       if (reportError) {
         await reportError({
           errorType: 'nextjs_error',
           message: error.message,
           errorStack: error.stack,
-          errorComponent: errorInfo.componentStack,
+          errorComponent: errorInfo.componentStack || undefined,
           browserInfo: {
             userAgent: navigator.userAgent,
             url: window.location.href,
@@ -53,7 +60,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
           pageState: {
             errorBoundary: true,
             componentStack: errorInfo.componentStack,
-            errorDigest: (errorInfo as any).errorDigest
+            errorDigest: (errorInfo as ErrorInfo & { errorDigest?: string }).errorDigest
           }
         })
       } else {
@@ -75,7 +82,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
             page: window.location.pathname,
             message: error.message,
             errorStack: error.stack,
-            errorComponent: errorInfo.componentStack,
+            errorComponent: errorInfo.componentStack || undefined,
             browserInfo: {
               userAgent: navigator.userAgent,
               url: window.location.href,

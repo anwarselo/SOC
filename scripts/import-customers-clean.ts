@@ -41,7 +41,7 @@ async function importCustomers() {
     console.log(`Found ${records.length} records to import`)
 
     // Import ALL records exactly as they are (except parsing dates/numbers)
-    const customers = records.map((record: any) => ({
+    const customers = records.map((record: Record<string, string>) => ({
       country: record['Country'] || null,
       customer_name: record['Customer Name'] || null,
       contact_person: record['Contect Person'] || null,  // Keep original typo from CSV

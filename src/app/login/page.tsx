@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 
 export default function LoginPage() {
@@ -74,7 +75,7 @@ export default function LoginPage() {
             <div className="relative inline-block">
               <div className="absolute -inset-3 bg-gradient-to-r from-[#886baa] via-[#8a4a62] to-[#543b73] rounded-2xl opacity-20 blur-lg animate-pulse"></div>
               <div className="relative bg-white p-4 rounded-2xl shadow-lg border border-[#e3d8eb]">
-                <img src="/sedar-big.jpg" alt="Sedar Global" className="h-16 mx-auto filter brightness-110 contrast-110" />
+                <Image src="/sedar-big.jpg" alt="Sedar Global" width={64} height={64} className="h-16 mx-auto filter brightness-110 contrast-110" />
               </div>
             </div>
             <div className="mt-4">

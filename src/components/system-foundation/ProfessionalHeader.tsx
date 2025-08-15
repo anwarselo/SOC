@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 interface ProfessionalHeaderProps {
   title: string
@@ -42,9 +43,11 @@ export function ProfessionalHeader({ title, subtitle, onLogout }: ProfessionalHe
             <div className="relative group">
               <div className="absolute -inset-2 bg-gradient-to-r from-[#886baa] via-[#543b73] to-[#8a4a62] rounded-xl opacity-20 blur-sm group-hover:opacity-30 transition-all duration-300"></div>
               <div className="relative bg-white p-3 rounded-xl shadow-lg border border-[#e3d8eb] group-hover:shadow-xl transition-all duration-300">
-                <img 
+                <Image 
                   src="/sedar-big.jpg" 
                   alt="Sedar Global" 
+                  width={48}
+                  height={48}
                   className="h-12 w-auto filter brightness-110 contrast-110" 
                 />
               </div>

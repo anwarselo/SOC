@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import html2canvas from 'html2canvas'
 
 interface ErrorReportData {
@@ -10,9 +10,9 @@ interface ErrorReportData {
   errorStack?: string
   errorComponent?: string
   pngBase64?: string
-  browserInfo?: any
-  pageState?: any
-  formData?: any
+  browserInfo?: Record<string, unknown>
+  pageState?: Record<string, unknown>
+  formData?: Record<string, unknown>
 }
 
 export function ErrorReporter() {
@@ -49,7 +49,7 @@ export function ErrorReporter() {
   const collectPageState = () => {
     const forms = Array.from(document.forms).map(form => {
       const formData = new FormData(form)
-      const data: Record<string, any> = {}
+      const data: Record<string, FormDataEntryValue> = {}
       for (const [key, value] of formData.entries()) {
         // Don't capture sensitive data
         if (!key.toLowerCase().includes('password') && 
@@ -73,11 +73,11 @@ export function ErrorReporter() {
         }
         return acc
       }, {} as Record<string, string | null>),
-      errors: (window as any).__nextErrorsCache || []
+      errors: (window as unknown as Record<string, unknown>).__nextErrorsCache || []
     }
   }
 
-  const reportError = async (errorData: Partial<ErrorReportData>) => {
+  const reportError = useCallback(async (errorData: Partial<ErrorReportData>) => {
     setIsCapturing(true)
     setResult(null)
 
@@ -155,7 +155,7 @@ export function ErrorReporter() {
     } finally {
       setIsCapturing(false)
     }
-  }
+  }, [userId])
 
   const handleManualReport = () => {
     reportError({
@@ -166,7 +166,7 @@ export function ErrorReporter() {
 
   // Expose the reportError function globally for automatic error reporting
   useEffect(() => {
-    (window as any).__reportError = reportError
+    (window as unknown as Record<string, unknown>).__reportError = reportError
     
     // Capture unhandled JavaScript errors
     const handleError = (event: ErrorEvent) => {
@@ -193,9 +193,9 @@ export function ErrorReporter() {
     return () => {
       window.removeEventListener('error', handleError)
       window.removeEventListener('unhandledrejection', handleUnhandledRejection)
-      delete (window as any).__reportError
+      delete (window as unknown as Record<string, unknown>).__reportError
     }
-  }, [userId])
+  }, [userId, reportError])
 
   return (
     <>

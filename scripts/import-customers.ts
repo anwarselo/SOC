@@ -43,7 +43,7 @@ async function importCustomers() {
 
     console.log(`Found ${records.length} records to import`)
 
-    const customers = records.map((record: any) => ({
+    const customers = records.map((record: Record<string, string>) => ({
       country: cleanValue(record['Country']) || 'UAE',
       customer_name: cleanValue(record['Customer Name']) || 'Unknown',
       contact_person: cleanValue(record['Contect Person']),

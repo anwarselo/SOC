@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 
 interface CallHistoryItem {
@@ -19,11 +19,7 @@ export function CallHistory({ customerId }: CallHistoryProps) {
   const [history, setHistory] = useState<CallHistoryItem[]>([])
   const [loading, setLoading] = useState(true)
   
-  useEffect(() => {
-    fetchCallHistory()
-  }, [customerId])
-
-  async function fetchCallHistory() {
+  const fetchCallHistory = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('sco_call_outcomes')
@@ -48,7 +44,11 @@ export function CallHistory({ customerId }: CallHistoryProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [customerId])
+
+  useEffect(() => {
+    fetchCallHistory()
+  }, [fetchCallHistory])
 
   if (history.length === 0) {
     return null

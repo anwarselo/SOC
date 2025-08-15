@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
@@ -62,26 +62,7 @@ export default function AdminDashboard() {
   const [searchPerformed, setSearchPerformed] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    // Check if user is admin
-    const role = localStorage.getItem('userRole')
-    if (role !== 'admin' && role !== 'supervisor') {
-      router.push('/app/calls')
-      return
-    }
-
-    fetchDashboardData()
-    initializeReports()
-  }, [])
-
-  // Fetch reports salespeople when switching to reports tab
-  useEffect(() => {
-    if (activeTab === 'reports' && reportsSalespeople.length === 0) {
-      fetchReportsSalespeople()
-    }
-  }, [activeTab, reportsSalespeople.length])
-
-  const initializeReports = () => {
+  const initializeReports = useCallback(() => {
     // Set default dates to current month for reports
     const now = new Date()
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
@@ -89,9 +70,9 @@ export default function AdminDashboard() {
     setStartDate(firstDay.toISOString().split('T')[0])
     setEndDate(lastDay.toISOString().split('T')[0])
     fetchReportsSalespeople()
-  }
+  }, [])
 
-  async function fetchDashboardData() {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true)
 
@@ -171,7 +152,27 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    // Check if user is admin
+    const role = localStorage.getItem('userRole')
+    if (role !== 'admin' && role !== 'supervisor') {
+      router.push('/app/calls')
+      return
+    }
+
+    fetchDashboardData()
+    initializeReports()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchDashboardData, initializeReports])
+
+  // Fetch reports salespeople when switching to reports tab
+  useEffect(() => {
+    if (activeTab === 'reports' && reportsSalespeople.length === 0) {
+      fetchReportsSalespeople()
+    }
+  }, [activeTab, reportsSalespeople.length])
 
   const handleAssignCode = async () => {
     if (!selectedSalesperson || !selectedCode) return
@@ -272,13 +273,13 @@ export default function AdminDashboard() {
       const customerIds = [...new Set(callsData.map(call => call.customer_id))]
       
       // Fetch customer details
-      const { data: customersData, error: customersError } = await supabase
+      const { data: customersData } = await supabase
         .from('sco_customers')
         .select('id, customer_name, mobile_no')
         .in('id', customerIds)
 
       // Get salesperson name
-      const { data: userData, error: userError } = await supabase
+      const { data: userData } = await supabase
         .from('sco_users')
         .select('full_name')
         .eq('id', selectedReportSalesperson)
@@ -288,7 +289,7 @@ export default function AdminDashboard() {
       const customerMap = (customersData || []).reduce((acc, customer) => {
         acc[customer.id] = customer
         return acc
-      }, {} as Record<string, any>)
+      }, {} as Record<string, { id: string; customer_name: string; mobile_no: string }>)
 
       const salespersonName = userData?.full_name || 'Unknown'
 

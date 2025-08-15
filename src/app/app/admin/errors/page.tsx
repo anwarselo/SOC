@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 interface ErrorReport {
   id: string
@@ -17,11 +17,7 @@ export default function ErrorReportsPage() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'unresolved' | 'resolved'>('unresolved')
 
-  useEffect(() => {
-    fetchReports()
-  }, [filter])
-
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     try {
       setLoading(true)
       const resolved = filter === 'all' ? null : filter === 'resolved'
@@ -36,7 +32,11 @@ export default function ErrorReportsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filter])
+
+  useEffect(() => {
+    fetchReports()
+  }, [fetchReports])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-GB', {
