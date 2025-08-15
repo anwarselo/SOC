@@ -211,14 +211,14 @@ export function CustomerCardClean({
                     className="p-3 border-2 border-green-300 rounded-lg bg-green-50 hover:bg-green-100 text-center transition-colors"
                   >
                     <div className="text-sm font-medium">✅ Interested</div>
-                    <div className="text-xs text-gray-600">مهتم</div>
+                    <div className="text-sm text-gray-600">مهتم</div>
                   </button>
                   <button
                     onClick={() => onStatusChange({ status: 'completed', result: 'Not Interested' })}
                     className="p-3 border-2 border-orange-300 rounded-lg bg-orange-50 hover:bg-orange-100 text-center transition-colors"
                   >
                     <div className="text-sm font-medium">❌ Not Interested</div>
-                    <div className="text-xs text-gray-600">غير مهتم</div>
+                    <div className="text-sm text-gray-600">غير مهتم</div>
                   </button>
                 </div>
 
@@ -237,14 +237,14 @@ export function CustomerCardClean({
                     className="p-3 border-2 border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 text-center transition-colors"
                   >
                     <div className="text-sm font-medium">📞 No Answer</div>
-                    <div className="text-xs text-gray-600">لا يجيب</div>
+                    <div className="text-sm text-gray-600">لا يجيب</div>
                   </button>
                   <button
                     onClick={() => {/* Schedule callback logic */}}
                     className="p-3 border-2 border-blue-300 rounded-lg bg-blue-50 hover:bg-blue-100 text-center transition-colors"
                   >
                     <div className="text-sm font-medium">📅 Schedule</div>
-                    <div className="text-xs text-gray-600">جدولة</div>
+                    <div className="text-sm text-gray-600">جدولة</div>
                   </button>
                 </div>
 
@@ -254,7 +254,7 @@ export function CustomerCardClean({
                   className="w-full p-3 border-2 border-red-300 rounded-lg bg-red-50 hover:bg-red-100 text-center transition-colors"
                 >
                   <div className="text-sm font-medium">🚫 Wrong Number</div>
-                  <div className="text-xs text-gray-600">رقم خاطئ</div>
+                  <div className="text-sm text-gray-600">رقم خاطئ</div>
                 </button>
               </div>
             </div>
