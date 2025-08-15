@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { StatusButtons } from './StatusButtons'
 import { CommentsBox } from './CommentsBox'
 import { ScriptPanel } from './ScriptPanel'
@@ -9,6 +9,10 @@ import { ErrorReporter } from './ErrorReporter'
 import { LanguageToggle } from './LanguageToggle'
 import { ProductReminder } from './ProductReminder'
 import { CallHistory } from './CallHistory'
+import { CallbackDialog } from './CallbackDialog'
+import { ConfirmDialog } from './ConfirmDialog'
+import { VoiceRecorder } from './VoiceRecorder'
+import { supabase } from '@/lib/supabase'
 
 interface Customer {
   id: string
@@ -54,13 +58,131 @@ export function CustomerCardClean({
 }: CustomerCardCleanProps) {
   const [language, setLanguage] = useState<'en' | 'ar'>('en')
   const [showHistory, setShowHistory] = useState(false)
+  const [showCallbackDialog, setShowCallbackDialog] = useState(false)
+  const [salespersonName, setSalespersonName] = useState<string>('')
+  const [showInterestedDialog, setShowInterestedDialog] = useState(false)
+  const [interestedComments, setInterestedComments] = useState('')
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean
+    action: () => void
+    title: string
+    message: string
+  }>({
+    isOpen: false,
+    action: () => {},
+    title: '',
+    message: ''
+  })
+
+  // Get salesperson name from database on component mount
+  useEffect(() => {
+    const fetchSalespersonName = async () => {
+      if (typeof window !== 'undefined') {
+        const userId = localStorage.getItem('userId') || 'a2b84473-3c78-406a-8205-8e476cb92874'
+        
+        // Fetch user data from database
+        const { data, error } = await supabase
+          .from('sco_users')
+          .select('full_name')
+          .eq('id', userId)
+          .single()
+        
+        if (data && !error) {
+          setSalespersonName(data.full_name)
+        } else {
+          console.error('Failed to fetch user name:', error)
+          setSalespersonName('Sales Representative')
+        }
+      }
+    }
+    
+    fetchSalespersonName()
+  }, [])
 
   if (!customer) {
     return <EmptyState view={view} />
   }
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === 'en' ? 'ar' : 'en')
+    setLanguage(prev => {
+      const newLang = prev === 'en' ? 'ar' : 'en'
+      console.log('Language toggled from', prev, 'to', newLang)
+      return newLang
+    })
+  }
+
+  const handleComplete = (result: string) => {
+    // Special handling for "Interested" - require comments
+    if (result === 'Interested') {
+      setInterestedComments(customer.comments || '') // Pre-fill with existing comments
+      setShowInterestedDialog(true)
+      return
+    }
+    
+    // Regular confirmation for other results
+    setConfirmDialog({
+      isOpen: true,
+      title: `Confirm: ${result}`,
+      message: `Are you sure you want to mark this customer as "${result}"? This action will complete the call.`,
+      action: () => {
+        onStatusChange({
+          status: 'completed',
+          result,
+          callbackDate: null
+        })
+        setConfirmDialog({ ...confirmDialog, isOpen: false })
+      }
+    })
+  }
+
+  const handleInterestedSave = () => {
+    // Check if comments are provided
+    if (!interestedComments.trim()) {
+      alert('Please add comments explaining why the customer is interested before saving.')
+      return
+    }
+
+    // Update comments first, then status
+    onCommentsChange(interestedComments)
+    
+    // Save the status change with comments
+    onStatusChange({
+      status: 'completed',
+      result: 'Interested',
+      callbackDate: null,
+      comments: interestedComments
+    })
+    
+    setShowInterestedDialog(false)
+    setInterestedComments('')
+  }
+
+  const handleNoAnswer = () => {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Confirm: No Answer/Busy',
+      message: `This will automatically schedule a callback for tomorrow (${tomorrow.toLocaleDateString()}). Continue?`,
+      action: () => {
+        onStatusChange({
+          status: 'callback',
+          result: 'No Answer / Busy',
+          callbackDate: tomorrow.toISOString().split('T')[0]
+        })
+        setConfirmDialog({ ...confirmDialog, isOpen: false })
+      }
+    })
+  }
+
+  const handleCallback = (date: string) => {
+    onStatusChange({
+      status: 'callback',
+      result: 'Scheduled Callback',
+      callbackDate: date
+    })
+    setShowCallbackDialog(false)
   }
 
   // Format phone number: +971 (0) 56 555 5555
@@ -175,112 +297,32 @@ export function CustomerCardClean({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left Column - Script and Product Info */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 flex flex-col space-y-8">
           
-          {/* Script Panel */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          {/* Script Panel - Match height with notes */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 flex-1">
             <ScriptPanel 
               status={customer.status} 
               callbackDate={customer.callbackDate || undefined} 
-              language={language} 
+              language={language}
+              customerName={customer.name}
+              lastPurchaseDate={customer.lastPurchaseDate}
+              salespersonName={salespersonName}
             />
           </div>
 
-          {/* Product Reminder */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          {/* Product Reminder - Match height with quick actions */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 flex-1">
             <ProductReminder language={language} />
           </div>
 
         </div>
 
-        {/* Right Column - Actions and Notes */}
-        <div className="space-y-8">
+        {/* Right Column - Notes and Actions */}
+        <div className="flex flex-col space-y-8">
           
-          {/* Quick Actions - Fixed Layout */}
-          {customer.status !== 'completed' && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              
-              {/* Fixed Action Buttons Grid */}
-              <div className="space-y-3">
-                {/* Row 1: Primary Actions */}
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => onStatusChange({ status: 'completed', result: 'Interested' })}
-                    className="p-3 border-2 border-green-300 rounded-lg bg-green-50 hover:bg-green-100 text-center transition-colors"
-                  >
-                    <div className={`font-medium ${language === 'ar' ? 'text-base' : 'text-sm'}`}>
-                      {language === 'ar' ? '✅ مهتم' : '✅ Interested'}
-                    </div>
-                    <div className={`text-gray-600 ${language === 'ar' ? 'text-sm' : 'text-xs'}`}>
-                      {language === 'ar' ? 'Interested' : 'مهتم'}
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => onStatusChange({ status: 'completed', result: 'Not Interested' })}
-                    className="p-3 border-2 border-orange-300 rounded-lg bg-orange-50 hover:bg-orange-100 text-center transition-colors"
-                  >
-                    <div className={`font-medium ${language === 'ar' ? 'text-base' : 'text-sm'}`}>
-                      {language === 'ar' ? '❌ غير مهتم' : '❌ Not Interested'}
-                    </div>
-                    <div className={`text-gray-600 ${language === 'ar' ? 'text-sm' : 'text-xs'}`}>
-                      {language === 'ar' ? 'Not Interested' : 'غير مهتم'}
-                    </div>
-                  </button>
-                </div>
-
-                {/* Row 2: Callback Actions */}
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => {
-                      const tomorrow = new Date()
-                      tomorrow.setDate(tomorrow.getDate() + 1)
-                      onStatusChange({ 
-                        status: 'callback', 
-                        result: 'No Answer / Busy',
-                        callbackDate: tomorrow.toISOString().split('T')[0]
-                      })
-                    }}
-                    className="p-3 border-2 border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 text-center transition-colors"
-                  >
-                    <div className={`font-medium ${language === 'ar' ? 'text-base' : 'text-sm'}`}>
-                      {language === 'ar' ? '📞 لا يجيب' : '📞 No Answer'}
-                    </div>
-                    <div className={`text-gray-600 ${language === 'ar' ? 'text-sm' : 'text-xs'}`}>
-                      {language === 'ar' ? 'No Answer' : 'لا يجيب'}
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => {/* Schedule callback logic */}}
-                    className="p-3 border-2 border-blue-300 rounded-lg bg-blue-50 hover:bg-blue-100 text-center transition-colors"
-                  >
-                    <div className={`font-medium ${language === 'ar' ? 'text-base' : 'text-sm'}`}>
-                      {language === 'ar' ? '📅 جدولة' : '📅 Schedule'}
-                    </div>
-                    <div className={`text-gray-600 ${language === 'ar' ? 'text-sm' : 'text-xs'}`}>
-                      {language === 'ar' ? 'Schedule' : 'جدولة'}
-                    </div>
-                  </button>
-                </div>
-
-                {/* Row 3: Wrong Number */}
-                <button
-                  onClick={() => onStatusChange({ status: 'completed', result: 'Wrong Number / Do Not Call' })}
-                  className="w-full p-3 border-2 border-red-300 rounded-lg bg-red-50 hover:bg-red-100 text-center transition-colors"
-                >
-                  <div className={`font-medium ${language === 'ar' ? 'text-base' : 'text-sm'}`}>
-                    {language === 'ar' ? '🚫 رقم خاطئ' : '🚫 Wrong Number'}
-                  </div>
-                  <div className={`text-gray-600 ${language === 'ar' ? 'text-sm' : 'text-xs'}`}>
-                    {language === 'ar' ? 'Wrong Number' : 'رقم خاطئ'}
-                  </div>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Call Notes and Recording */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          {/* Call Notes and Recording - Now on top */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-1">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Call Notes & Recording</h3>
             <CommentsBox 
               value={customer.comments} 
@@ -292,19 +334,176 @@ export function CustomerCardClean({
               <p className="text-sm text-orange-600 mt-3">⚠️ Please add notes for interested customers</p>
             )}
             
-            {/* Voice Recording Placeholder */}
+            {/* Voice Recording */}
             <div className="mt-4 pt-4 border-t border-gray-200">
-              <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#886baa] transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-                Add Voice Memo
-              </button>
+              <VoiceRecorder 
+                customerId={customer.id}
+                onRecordingComplete={(url) => {
+                  console.log('Recording completed:', url)
+                  // You can add logic here to save the recording URL to the database
+                }}
+              />
             </div>
           </div>
 
+          {/* Quick Actions - Now below notes */}
+          {customer.status !== 'completed' && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+              
+              {/* Fixed Action Buttons Grid */}
+              <div className="space-y-3">
+                {/* Row 1: Primary Results */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => handleComplete('Interested')}
+                    className="p-3 border-2 border-green-300 rounded-lg bg-green-50 hover:bg-green-100 text-center transition-colors"
+                    title={`Current language: ${language}`}
+                  >
+                    <div className="font-medium text-lg">
+                      {language === 'ar' ? '✅ مهتم' : '✅ Interested'}
+                    </div>
+                    <div className="text-gray-600 text-sm">
+                      {language === 'ar' ? 'Customer wants product' : 'العميل يريد المنتج'}
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => handleComplete('Not Interested')}
+                    className="p-3 border-2 border-orange-300 rounded-lg bg-orange-50 hover:bg-orange-100 text-center transition-colors"
+                  >
+                    <div className="font-medium text-lg">
+                      {language === 'ar' ? '❌ غير مهتم' : '❌ Not Interested'}
+                    </div>
+                    <div className="text-gray-600 text-sm">
+                      {language === 'ar' ? 'No interest in product' : 'لا اهتمام بالمنتج'}
+                    </div>
+                  </button>
+                </div>
+
+                {/* Row 2: Call Issues */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={handleNoAnswer}
+                    className="p-3 border-2 border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 text-center transition-colors"
+                  >
+                    <div className="font-medium text-lg">
+                      {language === 'ar' ? '📞 لا يجيب / مشغول' : '📞 No Answer / Busy'}
+                    </div>
+                    <div className="text-gray-600 text-sm">
+                      {language === 'ar' ? 'Auto retry tomorrow' : 'إعادة محاولة تلقائية غداً'}
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setShowCallbackDialog(true)}
+                    className="p-3 border-2 border-blue-300 rounded-lg bg-blue-50 hover:bg-blue-100 text-center transition-colors"
+                  >
+                    <div className="font-medium text-lg">
+                      {language === 'ar' ? '📅 إعادة جدولة' : '📅 Reschedule'}
+                    </div>
+                    <div className="text-gray-600 text-sm">
+                      {language === 'ar' ? 'Pick date and time' : 'اختيار التاريخ والوقت'}
+                    </div>
+                  </button>
+                </div>
+
+                {/* Row 3: Do Not Call */}
+                <button
+                  onClick={() => handleComplete('Wrong Number / Disconnected / Do Not Call')}
+                  className="w-full p-3 border-2 border-red-300 rounded-lg bg-red-50 hover:bg-red-100 text-center transition-colors"
+                >
+                  <div className="font-medium text-lg">
+                    {language === 'ar' ? '🚫 رقم خاطئ / منقطع / عدم الاتصال' : '🚫 Wrong Number / Disconnected / Do Not Call'}
+                  </div>
+                  <div className="text-gray-600 text-sm">
+                    {language === 'ar' ? 'Never contact again' : 'عدم الاتصال مرة أخرى'}
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
+
+      {/* Dialogs */}
+      {showCallbackDialog && (
+        <CallbackDialog
+          onSave={handleCallback}
+          onCancel={() => setShowCallbackDialog(false)}
+        />
+      )}
+      
+      {/* Special Interested Dialog with Comments */}
+      {showInterestedDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl">
+            <h3 className="text-xl font-bold text-[#543b73] mb-4">✅ Customer is Interested</h3>
+            <p className="text-gray-600 mb-6">
+              Please add notes explaining why the customer is interested. This helps with follow-up and conversion.
+            </p>
+            
+            {/* Comments Field */}
+            <div className="mb-6">
+              <label className="block text-sm font-semibold text-[#543b73] mb-2">
+                Interest Details & Next Steps
+              </label>
+              <textarea
+                value={interestedComments}
+                onChange={(e) => setInterestedComments(e.target.value)}
+                placeholder="E.g., Interested in living room curtains, budget 5000 AED, wants consultation next week..."
+                className="w-full px-4 py-3 border-2 border-[#e3d8eb] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#886baa]/50 focus:border-[#886baa] text-[#543b73] resize-none"
+                rows={4}
+                required
+              />
+            </div>
+
+            {/* Voice Recording in Dialog */}
+            <div className="mb-6 p-4 bg-[#F8FAFA] rounded-lg border border-[#B8D4D5]">
+              <label className="block text-sm font-semibold text-[#543b73] mb-2">
+                Optional: Record Voice Note
+              </label>
+              <VoiceRecorder 
+                customerId={customer.id}
+                onRecordingComplete={(url) => {
+                  console.log('Recording completed:', url)
+                }}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowInterestedDialog(false)
+                  setInterestedComments('')
+                }}
+                className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleInterestedSave}
+                disabled={!interestedComments.trim()}
+                className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-colors ${
+                  interestedComments.trim()
+                    ? 'bg-gradient-to-r from-[#886baa] to-[#543b73] text-white hover:from-[#8a4a62] hover:to-[#543b73] shadow-lg'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Save as Interested
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.action}
+        onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+      />
     </div>
   )
 }
