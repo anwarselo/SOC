@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { CustomerCardSimple } from '@/components/CustomerCardSimple'
+import { CustomerCardClean } from '@/components/CustomerCardClean'
 import { supabase } from '@/lib/supabase'
 
 interface Customer {
@@ -268,26 +268,26 @@ export default function CallsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50 py-8">
       {/* Simplified Filter Tabs */}
-      <div className="flex justify-center mb-6">
-        <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+      <div className="flex justify-center mb-12">
+        <div className="flex gap-1 bg-white rounded-lg p-1 shadow-sm border border-gray-200">
           <button
             onClick={() => handleViewChange('pending')}
-            className={`px-4 py-2 rounded-md font-medium transition-all ${
+            className={`px-6 py-3 rounded-md font-medium transition-all ${
               view === 'pending'
                 ? 'bg-[#886baa] text-white shadow-sm'
-                : 'text-gray-600 hover:bg-white hover:shadow-sm'
+                : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
             New Customers
           </button>
           <button
             onClick={() => handleViewChange('callbacks')}
-            className={`px-4 py-2 rounded-md font-medium transition-all ${
+            className={`px-6 py-3 rounded-md font-medium transition-all ${
               view === 'callbacks'
                 ? 'bg-[#886baa] text-white shadow-sm'
-                : 'text-gray-600 hover:bg-white hover:shadow-sm'
+                : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
             Today&apos;s Callbacks ({customers.filter(c => c.status === 'callback' && c.callbackDate === new Date().toISOString().split('T')[0]).length})
@@ -295,7 +295,7 @@ export default function CallsPage() {
         </div>
       </div>
 
-      <CustomerCardSimple
+      <CustomerCardClean
         customer={currentCustomer}
         view={view}
         onStatusChange={handleStatusChange}
