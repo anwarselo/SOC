@@ -3,10 +3,11 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { supabase } from '@/lib/supabase'
+import Link from 'next/link'
+import { signIn } from '@/lib/auth-client'
 
 export default function LoginPage() {
-  const [sedarNumber, setSedarNumber] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,36 +19,36 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // Check user in sco_users table
-      const { data: userData, error: userError } = await supabase
-        .from('sco_users')
-        .select('*')
-        .eq('sedar_number', sedarNumber.toUpperCase())
-        .eq('password_hash', password) // In production, use proper password hashing
-        .single()
+      const result = await signIn.email({
+        email,
+        password,
+      })
 
-      if (userError || !userData) {
-        setError('Invalid Sedar Number or Password')
-        setLoading(false)
+      if (result.error) {
+        setError('Invalid email or password')
         return
       }
 
-      // Store user info in localStorage
-      localStorage.setItem('isAuthenticated', 'true')
-      localStorage.setItem('userRole', String(userData.role || ''))
-      localStorage.setItem('userId', String(userData.id || ''))
-      localStorage.setItem('userName', String(userData.full_name || ''))
-      localStorage.setItem('sedarNumber', String(userData.sedar_number || ''))
-      localStorage.setItem('assignedCodes', JSON.stringify(userData.assigned_codes || []))
+      // Successful login - BetterAuth handles session management
+      // The user data is available in result.data.user
+      const user = result.data?.user
+      
+      if (user) {
+        // Store additional info in localStorage for compatibility
+        localStorage.setItem('isAuthenticated', 'true')
+        localStorage.setItem('userRole', (user as any).role || 'agent')
+        localStorage.setItem('userId', user.id)
+        localStorage.setItem('userName', (user as any).fullName || user.name || '')
+        localStorage.setItem('sedarNumber', (user as any).sedarNumber || '')
+        localStorage.setItem('assignedCodes', (user as any).assignedCodes || '[]')
 
-      // Set session cookie
-      document.cookie = 'demo-session=true; path=/; max-age=3600'
-
-      // Redirect based on role
-      if (userData.role === 'admin' || userData.role === 'supervisor') {
-        router.push('/app/admin')
-      } else {
-        router.push('/app/calls')
+        // Redirect based on role
+        const userRole = (user as any).role || 'agent'
+        if (userRole === 'admin' || userRole === 'supervisor') {
+          router.push('/app/admin')
+        } else {
+          router.push('/app/calls')
+        }
       }
     } catch (err) {
       console.error('Login error:', err)
@@ -88,16 +89,6 @@ export default function LoginPage() {
             </div>
           </div>
           
-          {/* Test Accounts Info */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 backdrop-blur-sm border border-blue-200/30 rounded-xl">
-            <p className="text-sm text-slate-700">
-              <span className="font-semibold text-blue-700">Demo Accounts:</span>
-              <br/>
-              <span className="font-mono bg-white/60 px-2 py-1 rounded text-xs mt-1 inline-block">Admin: ADMIN001 / admin123</span>
-              <br/>
-              <span className="font-mono bg-white/60 px-2 py-1 rounded text-xs mt-1 inline-block">Sales: SE001 / pass123</span>
-            </p>
-          </div>
           
           {error && (
             <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 rounded-xl">
@@ -111,25 +102,25 @@ export default function LoginPage() {
           )}
           
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Sedar Number Input */}
+            {/* Email Input */}
             <div className="space-y-2">
-              <label htmlFor="sedarNumber" className="block text-sm font-semibold text-slate-700">
+              <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
                 <span className="flex items-center gap-2">
                   <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V4a2 2 0 118 0v2m-4 0a2 2 0 104 0m-4 0v2m0 0h4v2m-4-2v6m4-6v6" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                   </svg>
-                  Sedar Number
-                  <span className="text-slate-500 font-normal">/ رقم سيدار</span>
+                  Email Address
+                  <span className="text-slate-500 font-normal">/ البريد الإلكتروني</span>
                 </span>
               </label>
               <div className="relative">
                 <input
-                  id="sedarNumber"
-                  type="text"
-                  value={sedarNumber}
-                  onChange={(e) => setSedarNumber(e.target.value.toUpperCase())}
-                  placeholder="e.g., SE001 or ADMIN001"
-                  className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border-2 border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 font-mono text-slate-800 placeholder-slate-400 transition-all duration-200 hover:bg-white/90"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your.email@company.com"
+                  className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border-2 border-slate-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 text-slate-800 placeholder-slate-400 transition-all duration-200 hover:bg-white/90"
                   required
                   disabled={loading}
                 />
@@ -163,9 +154,9 @@ export default function LoginPage() {
             {/* Sign In Button */}
             <button
               type="submit"
-              disabled={loading || !sedarNumber.trim() || !password.trim()}
+              disabled={loading || !email.trim() || !password.trim()}
               className={`w-full py-4 rounded-xl font-semibold text-white shadow-lg transition-all duration-300 transform relative overflow-hidden ${
-                loading || !sedarNumber.trim() || !password.trim()
+                loading || !email.trim() || !password.trim()
                   ? 'bg-gray-300 cursor-not-allowed' 
                   : 'bg-gradient-to-r from-[#886baa] via-[#8a4a62] to-[#543b73] hover:from-[#8a4a62] hover:via-[#543b73] hover:to-[#543b73] hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0'
               }`}
@@ -193,6 +184,19 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+
+          {/* Create Account Link */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-slate-600">
+              Don't have an account?{' '}
+              <Link 
+                href="/register" 
+                className="font-semibold text-[#8a4a62] hover:text-[#543b73] transition-colors duration-200"
+              >
+                Create Account
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
