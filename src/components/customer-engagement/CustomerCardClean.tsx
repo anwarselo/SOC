@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { StatusButtons } from '../communication/StatusButtons'
 import { CommentsBox } from '../communication/CommentsBox'
 import { ScriptPanel } from './ScriptPanel'
 import { EmptyState } from '../workflow-orchestration/EmptyState'
