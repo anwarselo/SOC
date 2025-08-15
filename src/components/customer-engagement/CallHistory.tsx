@@ -31,10 +31,10 @@ export function CallHistory({ customerId }: CallHistoryProps) {
       if (error) throw error
 
       const formattedHistory: CallHistoryItem[] = (data || []).map(call => ({
-        date: new Date(call.created_at).toLocaleDateString('en-GB'),
-        status: call.call_status.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-        outcome: call.outcome,
-        notes: call.comments
+        date: new Date(String(call.created_at || '')).toLocaleDateString('en-GB'),
+        status: String(call.call_status || '').replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+        outcome: String(call.outcome || ''),
+        notes: String(call.comments || '')
       }))
 
       setHistory(formattedHistory)

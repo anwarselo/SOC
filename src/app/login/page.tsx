@@ -34,10 +34,10 @@ export default function LoginPage() {
 
       // Store user info in localStorage
       localStorage.setItem('isAuthenticated', 'true')
-      localStorage.setItem('userRole', userData.role)
-      localStorage.setItem('userId', userData.id)
-      localStorage.setItem('userName', userData.full_name)
-      localStorage.setItem('sedarNumber', userData.sedar_number)
+      localStorage.setItem('userRole', String(userData.role || ''))
+      localStorage.setItem('userId', String(userData.id || ''))
+      localStorage.setItem('userName', String(userData.full_name || ''))
+      localStorage.setItem('sedarNumber', String(userData.sedar_number || ''))
       localStorage.setItem('assignedCodes', JSON.stringify(userData.assigned_codes || []))
 
       // Set session cookie

@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Supabase is configured
+    let supabase
+    try {
+      supabase = getSupabase()
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Database configuration error', details: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+    
     const body = await request.json()
     const {
       errorType = 'manual_report',
@@ -70,6 +81,17 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Supabase is configured
+    let supabase
+    try {
+      supabase = getSupabase()
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Database configuration error', details: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+    
     const url = new URL(request.url)
     const resolved = url.searchParams.get('resolved')
     const limit = parseInt(url.searchParams.get('limit') || '50')

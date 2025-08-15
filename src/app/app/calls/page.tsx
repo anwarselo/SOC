@@ -62,14 +62,17 @@ export default function CallsPage() {
 
       // Group calls by customer
       const callsByCustomer = (callsData || []).reduce((acc, call) => {
-        if (!acc[call.customer_id]) acc[call.customer_id] = []
-        acc[call.customer_id].push(call)
+        const customerId = String(call.customer_id || '')
+        if (customerId) {
+          if (!acc[customerId]) acc[customerId] = []
+          ;(acc[customerId] as any[]).push(call)
+        }
         return acc
-      }, {} as Record<string, unknown[]>)
+      }, {} as Record<string, any[]>)
 
       // Convert to frontend format
-      const formattedCustomers: Customer[] = (customersData || []).map(customer => {
-        const calls = callsByCustomer[customer.id] || []
+      const formattedCustomers = (customersData || []).map(customer => {
+        const calls = (callsByCustomer[String(customer.id || '')] || []) as any[]
         const lastCall = calls[0]
         
         let status: 'pending' | 'callback' | 'completed' = 'pending'
@@ -96,23 +99,23 @@ export default function CallsPage() {
         }
 
         return {
-          id: customer.id,
-          name: customer.customer_name,
-          phone: customer.mobile_no,
-          city: customer.city,
+          id: String(customer.id || ''),
+          name: String(customer.customer_name || ''),
+          phone: String(customer.mobile_no || ''),
+          city: String(customer.city || ''),
           status,
           result,
           callbackDate,
           comments,
           // Additional fields for display
           netValue: customer.net_value,
-          currency: customer.currency,
-          lastPurchaseDate: customer.last_purchase_date,
+          currency: String(customer.currency || ''),
+          lastPurchaseDate: String(customer.last_purchase_date || ''),
           noOfPurchases: customer.no_of_purchases,
-          contactPerson: customer.contact_person,
-          salesType: customer.sales_type,
-          province: customer.province_emirate,
-          country: customer.country_full
+          contactPerson: String(customer.contact_person || ''),
+          salesType: String(customer.sales_type || ''),
+          province: String(customer.province_emirate || ''),
+          country: String(customer.country_full || '')
         }
       })
 

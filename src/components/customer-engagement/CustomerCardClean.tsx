@@ -87,7 +87,7 @@ export function CustomerCardClean({
           .single()
         
         if (data && !error) {
-          setSalespersonName(data.full_name)
+          setSalespersonName(String(data.full_name || 'Sales Representative'))
         } else {
           console.error('Failed to fetch user name:', error)
           setSalespersonName('Sales Representative')

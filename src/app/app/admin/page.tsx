@@ -91,8 +91,10 @@ export default function AdminDashboard() {
       // Group by assignment code
       const codeGroups = codesData?.reduce((acc, curr) => {
         const code = curr.assignment_code
-        if (!acc[code]) acc[code] = 0
-        acc[code]++
+        if (typeof code === 'string' && code) {
+          if (!acc[code]) acc[code] = 0
+          acc[code]++
+        }
         return acc
       }, {} as Record<string, number>)
 
@@ -104,27 +106,30 @@ export default function AdminDashboard() {
         const { data: customerCount } = await supabase
           .from('sco_customers')
           .select('id', { count: 'exact' })
-          .in('assignment_code', user.assigned_codes || [])
+          .in('assignment_code', Array.isArray(user.assigned_codes) ? user.assigned_codes : [])
 
         // Get call outcomes for this salesperson
         const { data: callsData } = await supabase
           .from('sco_call_outcomes')
           .select('call_status, outcome')
-          .eq('user_id', user.id)
+          .eq('user_id', String(user.id))
 
         const stats = callsData?.reduce((acc, call) => {
-          if (call.call_status === 'completed') acc.completed++
-          if (call.call_status === 'callback') acc.callbacks++
-          if (call.outcome?.toLowerCase().includes('interested') && !call.outcome?.toLowerCase().includes('not')) acc.interested++
-          if (call.outcome?.toLowerCase().includes('not interested')) acc.notInterested++
+          const callStatus = String(call.call_status || '')
+          const outcome = String(call.outcome || '').toLowerCase()
+          
+          if (callStatus === 'completed') acc.completed++
+          if (callStatus === 'callback') acc.callbacks++
+          if (outcome.includes('interested') && !outcome.includes('not')) acc.interested++
+          if (outcome.includes('not interested')) acc.notInterested++
           return acc
         }, { completed: 0, callbacks: 0, interested: 0, notInterested: 0 })
 
         salespeopleStats.push({
-          id: user.id,
-          name: user.full_name,
-          sedarNumber: user.sedar_number,
-          assignedCodes: user.assigned_codes || [],
+          id: String(user.id || ''),
+          name: String(user.full_name || ''),
+          sedarNumber: String(user.sedar_number || ''),
+          assignedCodes: Array.isArray(user.assigned_codes) ? user.assigned_codes : [],
           totalCustomers: customerCount?.length || 0,
           callsMade: callsData?.length || 0,
           completed: stats?.completed || 0,
@@ -138,11 +143,11 @@ export default function AdminDashboard() {
       
       // Convert code groups to array
       const codes = Object.entries(codeGroups || {}).map(([code, count]) => {
-        const assignedUser = usersData?.find(u => u.assigned_codes?.includes(code))
+        const assignedUser = usersData?.find(u => Array.isArray(u.assigned_codes) && u.assigned_codes.includes(code))
         return {
           code,
           customerCount: count,
-          assignedTo: assignedUser?.full_name || null
+          assignedTo: String(assignedUser?.full_name || '') || null
         }
       })
       setAssignmentCodes(codes)
@@ -185,7 +190,7 @@ export default function AdminDashboard() {
         .eq('id', selectedSalesperson)
         .single()
 
-      const currentCodes = userData?.assigned_codes || []
+      const currentCodes = Array.isArray(userData?.assigned_codes) ? userData.assigned_codes : []
       if (!currentCodes.includes(selectedCode)) {
         const { error } = await supabase
           .from('sco_users')
@@ -213,7 +218,7 @@ export default function AdminDashboard() {
       console.log('Fetching reports salespeople...')
       const { data, error } = await supabase
         .from('sco_users')
-        .select('id, sedar_number, full_name, role')
+        .select('id, sedar_number, full_name, role, assigned_codes')
 
       console.log('Raw reports data:', { data, error })
 
@@ -230,8 +235,14 @@ export default function AdminDashboard() {
 
       // Filter out admins - only include agents/salespeople
       const salespeople = data?.filter(user => 
-        user.role && !['admin', 'supervisor'].includes(user.role)
-      ) || []
+        user.role && !['admin', 'supervisor'].includes(String(user.role))
+      ).map(user => ({
+        id: String(user.id || ''),
+        sedar_number: String(user.sedar_number || ''),
+        full_name: String(user.full_name || ''),
+        role: String(user.role || ''),
+        assigned_codes: Array.isArray(user.assigned_codes) ? user.assigned_codes : []
+      })) || []
 
       console.log('Filtered salespeople for reports:', salespeople)
       setReportsSalespeople(salespeople)
@@ -287,26 +298,33 @@ export default function AdminDashboard() {
 
       // Create lookup maps
       const customerMap = (customersData || []).reduce((acc, customer) => {
-        acc[customer.id] = customer
+        const customerId = String(customer.id || '')
+        if (customerId) {
+          acc[customerId] = {
+            id: customerId,
+            customer_name: String(customer.customer_name || ''),
+            mobile_no: String(customer.mobile_no || '')
+          }
+        }
         return acc
       }, {} as Record<string, { id: string; customer_name: string; mobile_no: string }>)
 
       const salespersonName = userData?.full_name || 'Unknown'
 
       // Format the data
-      const formattedData: CallOutcome[] = callsData.map(call => ({
-        id: call.id,
-        customer_id: call.customer_id,
-        user_id: call.user_id,
-        call_status: call.call_status,
-        outcome: call.outcome,
-        comments: call.comments,
-        callback_date: call.callback_date,
-        created_at: call.created_at,
-        customer_name: customerMap[call.customer_id]?.customer_name || 'Unknown',
-        customer_phone: customerMap[call.customer_id]?.mobile_no || '',
-        salesperson_name: salespersonName
-      }))
+      const formattedData = callsData.map(call => ({
+        id: String(call.id || ''),
+        customer_id: String(call.customer_id || ''),
+        user_id: String(call.user_id || ''),
+        call_status: String(call.call_status || '') as 'no_answer' | 'busy' | 'interested' | 'not_interested' | 'callback' | 'purchased' | 'wrong_number',
+        outcome: String(call.outcome || ''),
+        comments: String(call.comments || ''),
+        callback_date: String(call.callback_date || ''),
+        created_at: String(call.created_at || ''),
+        customer_name: customerMap[String(call.customer_id || '')]?.customer_name || 'Unknown',
+        customer_phone: customerMap[String(call.customer_id || '')]?.mobile_no || '',
+        salesperson_name: String(salespersonName)
+      })) as CallOutcome[]
 
       setCallOutcomes(formattedData)
     } catch (error) {
