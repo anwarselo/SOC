@@ -60,7 +60,12 @@ export function CustomerCardClean({
   }
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === 'en' ? 'ar' : 'en')
+    console.log('Current language:', language)
+    setLanguage(prev => {
+      const newLang = prev === 'en' ? 'ar' : 'en'
+      console.log('New language:', newLang)
+      return newLang
+    })
   }
 
   // Format phone number: +971 (0) 56 555 5555
@@ -268,6 +273,9 @@ export function CustomerCardClean({
               onSave={onCommentsSave}
               customerId={customer.id}
             />
+            <div className="mt-2 text-xs text-gray-500">
+              Current language: {language}
+            </div>
             {customer.result === 'Interested' && !customer.comments && (
               <p className="text-sm text-orange-600 mt-3">⚠️ Please add notes for interested customers</p>
             )}
