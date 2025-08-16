@@ -77,21 +77,9 @@ export function CustomerCardClean({
   useEffect(() => {
     const fetchSalespersonName = async () => {
       if (typeof window !== 'undefined') {
-        const userId = localStorage.getItem('userId') || 'a2b84473-3c78-406a-8205-8e476cb92874'
-        
-        // Fetch user data from database
-        const { data, error } = await supabase
-          .from('sco_users')
-          .select('full_name')
-          .eq('id', userId)
-          .single()
-        
-        if (data && !error) {
-          setSalespersonName(String(data.full_name || 'Sales Representative'))
-        } else {
-          console.error('Failed to fetch user name:', error)
-          setSalespersonName('Sales Representative')
-        }
+        // Get user name from localStorage (set during BetterAuth login)
+        const userName = localStorage.getItem('userName') || 'Sales Representative'
+        setSalespersonName(userName)
       }
     }
     
@@ -215,7 +203,7 @@ export function CustomerCardClean({
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header with Customer Info */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-6">
+      <div className="bg-white  shadow-sm border border-gray-200 p-8 mb-6">
         <div className="flex justify-between items-start mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">{customer.name}</h1>
@@ -249,7 +237,7 @@ export function CustomerCardClean({
           <div>
             <h4 className="text-sm font-semibold text-gray-700 mb-2">Status</h4>
             <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full ${
+              <div className={`w-3 h-3  ${
                 customer.status === 'completed' ? 'bg-green-500' :
                 customer.status === 'callback' ? 'bg-orange-500' :
                 'bg-gray-400'
@@ -299,7 +287,7 @@ export function CustomerCardClean({
         <div className="lg:col-span-2 flex flex-col space-y-8">
           
           {/* Script Panel - Match height with notes */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 flex-1">
+          <div className="bg-white  shadow-sm border border-gray-200 p-8 flex-1">
             <ScriptPanel 
               status={customer.status} 
               callbackDate={customer.callbackDate || undefined} 
@@ -311,7 +299,7 @@ export function CustomerCardClean({
           </div>
 
           {/* Product Reminder - Match height with quick actions */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 flex-1">
+          <div className="bg-white  shadow-sm border border-gray-200 p-8 flex-1">
             <ProductReminder language={language} />
           </div>
 
@@ -321,7 +309,7 @@ export function CustomerCardClean({
         <div className="flex flex-col space-y-8">
           
           {/* Call Notes and Recording - Now on top */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-1">
+          <div className="bg-white  shadow-sm border border-gray-200 p-6 flex-1">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Call Notes & Recording</h3>
             <CommentsBox 
               value={customer.comments} 
@@ -347,7 +335,7 @@ export function CustomerCardClean({
 
           {/* Quick Actions - Now below notes */}
           {customer.status !== 'completed' && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-1">
+            <div className="bg-white  shadow-sm border border-gray-200 p-6 flex-1">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               
               {/* Fixed Action Buttons Grid */}
@@ -356,7 +344,7 @@ export function CustomerCardClean({
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => handleComplete('Interested')}
-                    className="p-3 border-2 border-green-300 rounded-lg bg-green-50 hover:bg-green-100 text-center transition-colors"
+                    className="p-3 border-2 border-green-300  bg-green-50 hover:bg-green-100 text-center transition-colors"
                     title={`Current language: ${language}`}
                   >
                     <div className="font-medium text-lg">
@@ -368,7 +356,7 @@ export function CustomerCardClean({
                   </button>
                   <button
                     onClick={() => handleComplete('Not Interested')}
-                    className="p-3 border-2 border-orange-300 rounded-lg bg-orange-50 hover:bg-orange-100 text-center transition-colors"
+                    className="p-3 border-2 border-orange-300  bg-orange-50 hover:bg-orange-100 text-center transition-colors"
                   >
                     <div className="font-medium text-lg">
                       {language === 'ar' ? '❌ غير مهتم' : '❌ Not Interested'}
@@ -383,7 +371,7 @@ export function CustomerCardClean({
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={handleNoAnswer}
-                    className="p-3 border-2 border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 text-center transition-colors"
+                    className="p-3 border-2 border-gray-300  bg-gray-50 hover:bg-gray-100 text-center transition-colors"
                   >
                     <div className="font-medium text-lg">
                       {language === 'ar' ? '📞 لا يجيب / مشغول' : '📞 No Answer / Busy'}
@@ -394,7 +382,7 @@ export function CustomerCardClean({
                   </button>
                   <button
                     onClick={() => setShowCallbackDialog(true)}
-                    className="p-3 border-2 border-blue-300 rounded-lg bg-blue-50 hover:bg-blue-100 text-center transition-colors"
+                    className="p-3 border-2 border-blue-300  bg-blue-50 hover:bg-blue-100 text-center transition-colors"
                   >
                     <div className="font-medium text-lg">
                       {language === 'ar' ? '📅 إعادة جدولة' : '📅 Reschedule'}
@@ -408,7 +396,7 @@ export function CustomerCardClean({
                 {/* Row 3: Do Not Call */}
                 <button
                   onClick={() => handleComplete('Wrong Number / Disconnected / Do Not Call')}
-                  className="w-full p-3 border-2 border-red-300 rounded-lg bg-red-50 hover:bg-red-100 text-center transition-colors"
+                  className="w-full p-3 border-2 border-red-300  bg-red-50 hover:bg-red-100 text-center transition-colors"
                 >
                   <div className="font-medium text-lg">
                     {language === 'ar' ? '🚫 رقم خاطئ / منقطع / عدم الاتصال' : '🚫 Wrong Number / Disconnected / Do Not Call'}
@@ -435,7 +423,7 @@ export function CustomerCardClean({
       {/* Special Interested Dialog with Comments */}
       {showInterestedDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl">
+          <div className="bg-white  p-8 max-w-md w-full mx-4 shadow-2xl">
             <h3 className="text-xl font-bold text-[#543b73] mb-4">✅ Customer is Interested</h3>
             <p className="text-gray-600 mb-6">
               Please add notes explaining why the customer is interested. This helps with follow-up and conversion.
@@ -450,14 +438,14 @@ export function CustomerCardClean({
                 value={interestedComments}
                 onChange={(e) => setInterestedComments(e.target.value)}
                 placeholder="E.g., Interested in living room curtains, budget 5000 AED, wants consultation next week..."
-                className="w-full px-4 py-3 border-2 border-[#e3d8eb] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#886baa]/50 focus:border-[#886baa] text-[#543b73] resize-none"
+                className="w-full px-4 py-3 border-2 border-[#e3d8eb]  focus:outline-none focus:ring-2 focus:ring-[#886baa]/50 focus:border-[#886baa] text-[#543b73] resize-none"
                 rows={4}
                 required
               />
             </div>
 
             {/* Voice Recording in Dialog */}
-            <div className="mb-6 p-4 bg-[#F8FAFA] rounded-lg border border-[#B8D4D5]">
+            <div className="mb-6 p-4 bg-[#F8FAFA]  border border-[#B8D4D5]">
               <label className="block text-sm font-semibold text-[#543b73] mb-2">
                 Optional: Record Voice Note
               </label>
@@ -476,14 +464,14 @@ export function CustomerCardClean({
                   setShowInterestedDialog(false)
                   setInterestedComments('')
                 }}
-                className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-3 border-2 border-gray-300  text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleInterestedSave}
                 disabled={!interestedComments.trim()}
-                className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-colors ${
+                className={`flex-1 px-4 py-3  font-semibold transition-colors ${
                   interestedComments.trim()
                     ? 'bg-gradient-to-r from-[#886baa] to-[#543b73] text-white hover:from-[#8a4a62] hover:to-[#543b73] shadow-lg'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'

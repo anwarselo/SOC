@@ -202,7 +202,7 @@ export function ErrorReporter() {
       <button
         onClick={handleManualReport}
         disabled={isCapturing}
-        className="px-3 py-1.5 text-sm border border-[#c7b1d7] rounded-lg bg-white/80 hover:bg-[#e3d8eb]/50 text-[#543b73] disabled:opacity-50 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200 font-medium"
+        className="px-3 py-1.5 text-sm border border-[#c7b1d7]  bg-white/80 hover:bg-[#e3d8eb]/50 text-[#543b73] disabled:opacity-50 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200 font-medium"
       >
         {isCapturing ? (
           <span className="flex items-center gap-2">
@@ -223,7 +223,7 @@ export function ErrorReporter() {
       </button>
       
       {result && (
-        <div className={`fixed top-4 right-4 p-4 rounded-xl border shadow-lg z-50 min-w-80 ${
+        <div className={`fixed top-4 right-4 p-4  border shadow-lg z-50 min-w-80 ${
           result.type === 'success'
             ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
             : 'bg-red-50 border-red-200 text-red-800'

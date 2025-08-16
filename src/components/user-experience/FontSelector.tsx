@@ -76,12 +76,12 @@ export function FontSelector({ onFontChange }: FontSelectorProps) {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <div className={`bg-white border-2 border-[#EDEDEA] rounded-lg shadow-lg transition-all duration-300 ${
+      <div className={`bg-white border-2 border-[#EDEDEA]  shadow-lg transition-all duration-300 ${
         isExpanded ? 'w-80' : 'w-12'
       }`}>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full p-3 flex items-center justify-center hover:bg-[#F5F5F0] transition-colors rounded-lg"
+          className="w-full p-3 flex items-center justify-center hover:bg-[#F5F5F0] transition-colors "
           title="Font Settings"
         >
           <span className="text-lg">🔤</span>
@@ -97,7 +97,7 @@ export function FontSelector({ onFontChange }: FontSelectorProps) {
                   <button
                     key={font.name}
                     onClick={() => handleEnglishFontChange(font)}
-                    className={`w-full text-left px-3 py-2 rounded-md text-sm transition-all ${
+                    className={`w-full text-left px-3 py-2  text-sm transition-all ${
                       selectedEnglishFont.name === font.name
                         ? 'bg-[#5F9EA0] text-white'
                         : 'hover:bg-[#E8F4F5] text-[#2D3436]'
@@ -118,7 +118,7 @@ export function FontSelector({ onFontChange }: FontSelectorProps) {
                   <button
                     key={font.name}
                     onClick={() => handleArabicFontChange(font)}
-                    className={`w-full text-right px-3 py-2 rounded-md text-sm transition-all ${
+                    className={`w-full text-right px-3 py-2  text-sm transition-all ${
                       selectedArabicFont.name === font.name
                         ? 'bg-[#5F9EA0] text-white'
                         : 'hover:bg-[#E8F4F5] text-[#2D3436]'

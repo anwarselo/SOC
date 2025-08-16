@@ -77,7 +77,7 @@ export function StatusButtons({ onAction }: StatusButtonsProps) {
         <div className="grid grid-cols-4 gap-2">
           <button
             onClick={handleNoAnswer}
-            className="action-button px-3 py-3 border-2 border-[#9E9E9E] rounded-lg bg-[#F5F5F5] hover:bg-[#EEEEEE] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98]"
+            className="action-button px-3 py-3 border-2 border-[#9E9E9E]  bg-[#F5F5F5] hover:bg-[#EEEEEE] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98]"
           >
             <div className="text-center">
               <div className="text-sm">📞 No Answer/Busy</div>
@@ -87,7 +87,7 @@ export function StatusButtons({ onAction }: StatusButtonsProps) {
           </button>
           <button
             onClick={() => setShowCallbackDialog(true)}
-            className="action-button px-3 py-3 border-2 border-[#FFB74D] rounded-lg bg-[#FFF3E0] hover:bg-[#FFE8CC] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98]"
+            className="action-button px-3 py-3 border-2 border-[#FFB74D]  bg-[#FFF3E0] hover:bg-[#FFE8CC] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98]"
           >
             <div className="text-center">
               <div className="text-sm">📅 Schedule Callback</div>
@@ -97,7 +97,7 @@ export function StatusButtons({ onAction }: StatusButtonsProps) {
           </button>
           <button
             onClick={() => handleComplete('Interested')}
-            className="action-button px-3 py-3 border-2 border-[#4CAF50] rounded-lg bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98]"
+            className="action-button px-3 py-3 border-2 border-[#4CAF50]  bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98]"
           >
             <div className="text-center">
               <div className="text-sm">✅ Interested</div>
@@ -107,7 +107,7 @@ export function StatusButtons({ onAction }: StatusButtonsProps) {
           </button>
           <button
             onClick={() => handleComplete('Not Interested')}
-            className="action-button px-3 py-3 border-2 border-[#FF9800] rounded-lg bg-[#FFF3E0] hover:bg-[#FFE0B2] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98]"
+            className="action-button px-3 py-3 border-2 border-[#FF9800]  bg-[#FFF3E0] hover:bg-[#FFE0B2] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98]"
           >
             <div className="text-center">
               <div className="text-sm">❌ Not Interested</div>
@@ -121,7 +121,7 @@ export function StatusButtons({ onAction }: StatusButtonsProps) {
         <div className="flex justify-center">
           <button
             onClick={() => handleComplete('Wrong Number / Do Not Call')}
-            className="action-button px-6 py-3 border-2 border-[#F44336] rounded-lg bg-[#FFEBEE] hover:bg-[#FFCDD2] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98] w-1/3"
+            className="action-button px-6 py-3 border-2 border-[#F44336]  bg-[#FFEBEE] hover:bg-[#FFCDD2] text-[#2D3436] font-medium transition-all duration-200 hover:shadow-sm active:scale-[0.98] w-1/3"
           >
             <div className="text-center">
               <div className="text-sm">🚫 Wrong Number / Do Not Call</div>

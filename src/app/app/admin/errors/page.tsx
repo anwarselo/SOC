@@ -76,7 +76,7 @@ export default function ErrorReportsPage() {
         <div className="flex gap-2">
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2  font-medium transition-colors ${
               filter === 'all'
                 ? 'bg-[#886baa] text-white'
                 : 'bg-white text-[#543b73] border border-[#e3d8eb] hover:bg-[#e3d8eb]/50'
@@ -86,7 +86,7 @@ export default function ErrorReportsPage() {
           </button>
           <button
             onClick={() => setFilter('unresolved')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2  font-medium transition-colors ${
               filter === 'unresolved'
                 ? 'bg-[#e17553] text-white'
                 : 'bg-white text-[#543b73] border border-[#e3d8eb] hover:bg-[#e3d8eb]/50'
@@ -96,7 +96,7 @@ export default function ErrorReportsPage() {
           </button>
           <button
             onClick={() => setFilter('resolved')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2  font-medium transition-colors ${
               filter === 'resolved'
                 ? 'bg-emerald-600 text-white'
                 : 'bg-white text-[#543b73] border border-[#e3d8eb] hover:bg-[#e3d8eb]/50'
@@ -108,14 +108,14 @@ export default function ErrorReportsPage() {
       </div>
 
       {reports.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#e3d8eb] shadow-lg p-12 text-center">
+        <div className="bg-white  border border-[#e3d8eb] shadow-lg p-12 text-center">
           <svg className="w-16 h-16 text-[#c7b1d7] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <p className="text-[#a97e9d] text-lg">No error reports found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-[#e3d8eb] shadow-lg overflow-hidden">
+        <div className="bg-white  border border-[#e3d8eb] shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-[#e3d8eb]/30">
@@ -135,7 +135,7 @@ export default function ErrorReportsPage() {
                       {formatDate(report.created_at)}
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getErrorTypeColor(report.error_type)}`}>
+                      <span className={`px-3 py-1  text-xs font-semibold border ${getErrorTypeColor(report.error_type)}`}>
                         {report.error_type.replace('_', ' ').toUpperCase()}
                       </span>
                     </td>
@@ -152,7 +152,7 @@ export default function ErrorReportsPage() {
                       }
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      <span className={`px-3 py-1  text-xs font-semibold ${
                         report.resolved 
                           ? 'bg-emerald-100 text-emerald-800' 
                           : 'bg-orange-100 text-orange-800'

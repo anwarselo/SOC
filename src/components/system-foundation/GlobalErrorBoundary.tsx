@@ -104,9 +104,9 @@ class GlobalErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-gradient-to-br from-[#e3d8eb] via-white to-[#c7b1d7] flex items-center justify-center p-6">
-          <div className="bg-white rounded-2xl border border-[#e3d8eb] shadow-xl p-8 max-w-2xl w-full">
+          <div className="bg-white  border border-[#e3d8eb] shadow-xl p-8 max-w-2xl w-full">
             <div className="flex items-center gap-4 mb-6">
-              <div className="bg-red-100 p-3 rounded-xl">
+              <div className="bg-red-100 p-3 ">
                 <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
@@ -117,7 +117,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
               </div>
             </div>
 
-            <div className="bg-[#e3d8eb]/30 rounded-xl p-4 mb-6">
+            <div className="bg-[#e3d8eb]/30  p-4 mb-6">
               <h3 className="font-semibold text-[#543b73] mb-2">Error Details:</h3>
               <p className="text-sm text-[#8a4a62] font-mono">{this.state.error?.message}</p>
             </div>
@@ -125,13 +125,13 @@ class GlobalErrorBoundary extends Component<Props, State> {
             <div className="flex gap-3">
               <button
                 onClick={() => window.location.reload()}
-                className="px-6 py-3 bg-gradient-to-r from-[#886baa] to-[#543b73] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-[#8a4a62] hover:to-[#543b73] transform hover:-translate-y-0.5"
+                className="px-6 py-3 bg-gradient-to-r from-[#886baa] to-[#543b73] text-white  font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-[#8a4a62] hover:to-[#543b73] transform hover:-translate-y-0.5"
               >
                 Reload Page
               </button>
               <button
                 onClick={() => window.history.back()}
-                className="px-6 py-3 bg-white border-2 border-[#e3d8eb] text-[#543b73] rounded-xl font-semibold hover:bg-[#e3d8eb]/50 transition-all duration-300"
+                className="px-6 py-3 bg-white border-2 border-[#e3d8eb] text-[#543b73]  font-semibold hover:bg-[#e3d8eb]/50 transition-all duration-300"
               >
                 Go Back
               </button>
@@ -142,7 +142,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
                 <summary className="cursor-pointer text-sm font-medium text-[#8a4a62] hover:text-[#543b73]">
                   View Technical Details (Development Mode)
                 </summary>
-                <div className="mt-3 p-4 bg-gray-50 rounded-lg">
+                <div className="mt-3 p-4 bg-gray-50 ">
                   <h4 className="font-medium text-gray-700 mb-2">Component Stack:</h4>
                   <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-auto">
                     {this.state.errorInfo.componentStack}

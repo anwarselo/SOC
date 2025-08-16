@@ -138,15 +138,15 @@ export function ProductReminder({ language }: ProductReminderProps) {
   }
 
   return (
-    <div className="relative bg-gradient-to-r from-[#e3d8eb]/80 via-[#c7b1d7]/60 to-[#a97e9d]/40 backdrop-blur-sm border-2 border-[#c7b1d7] rounded-2xl p-6 mb-6 shadow-lg">
+    <div className="relative bg-gradient-to-r from-[#e3d8eb]/80 via-[#c7b1d7]/60 to-[#a97e9d]/40 backdrop-blur-sm border-2 border-[#c7b1d7]  p-6 mb-6 shadow-lg">
       {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#886baa]/20 to-[#543b73]/10 rounded-full -translate-y-10 translate-x-10"></div>
-      <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-br from-[#e17553]/20 to-[#8a4a62]/10 rounded-full translate-y-8 -translate-x-8"></div>
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#886baa]/20 to-[#543b73]/10  -translate-y-10 translate-x-10"></div>
+      <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-br from-[#e17553]/20 to-[#8a4a62]/10  translate-y-8 -translate-x-8"></div>
       
       <div className="relative">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="bg-white p-2.5 rounded-xl shadow-md border border-[#e3d8eb]">
+            <div className="bg-white p-2.5  shadow-md border border-[#e3d8eb]">
               <svg className="w-6 h-6 text-[#886baa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
               </svg>
@@ -158,7 +158,7 @@ export function ProductReminder({ language }: ProductReminderProps) {
           
           <button
             onClick={refreshHighlights}
-            className="p-2 bg-white/70 hover:bg-white rounded-lg border border-[#e3d8eb] transition-all duration-200 group"
+            className="p-2 bg-white/70 hover:bg-white  border border-[#e3d8eb] transition-all duration-200 group"
             title={language === 'en' ? 'Refresh highlights' : 'تحديث المنتجات'}
           >
             <svg className="w-4 h-4 text-[#886baa] group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -167,12 +167,12 @@ export function ProductReminder({ language }: ProductReminderProps) {
           </button>
         </div>
         
-        <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-[#e3d8eb]/50">
+        <div className="bg-white/70 backdrop-blur-sm  p-4 border border-[#e3d8eb]/50">
           <ul className={`text-[#543b73] space-y-3 ${language === 'ar' ? 'text-base' : 'text-sm'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
             {currentHighlights.map((highlight, index) => (
               <li key={`${highlight.category}-${index}-${refreshKey}`} className="flex items-start gap-2 opacity-0 animate-fadeIn" style={{ animationDelay: `${index * 100}ms` }}>
                 <span 
-                  className="w-2 h-2 rounded-full mt-2 flex-shrink-0" 
+                  className="w-2 h-2  mt-2 flex-shrink-0" 
                   style={{ backgroundColor: categoryColors[highlight.category] }}
                 ></span>
                 <span dangerouslySetInnerHTML={{ 

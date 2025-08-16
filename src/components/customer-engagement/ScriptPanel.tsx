@@ -85,7 +85,7 @@ export function ScriptPanel({ status, callbackDate, language = 'en', customerNam
   }
   if (status === 'completed') {
     return (
-      <div className="bg-gradient-to-br from-[#E8F5E9] to-[#D4EDDA] border-2 border-[#81C784] rounded-xl p-5 shadow-sm">
+      <div className="bg-gradient-to-br from-[#E8F5E9] to-[#D4EDDA] border-2 border-[#81C784]  p-5 shadow-sm">
         <h3 className={`font-bold text-[#2D3436] mb-2 ${language === 'ar' ? 'text-xl text-right' : 'text-lg text-left'}`}>
           {language === 'en' ? 'Call Completed' : 'تمت المكالمة'}
         </h3>
@@ -100,7 +100,7 @@ export function ScriptPanel({ status, callbackDate, language = 'en', customerNam
 
   if (status === 'callback') {
     return (
-      <div className="bg-gradient-to-br from-[#FFF3E0] to-[#FFE8CC] border-2 border-[#FFB74D] rounded-xl p-5 shadow-sm">
+      <div className="bg-gradient-to-br from-[#FFF3E0] to-[#FFE8CC] border-2 border-[#FFB74D]  p-5 shadow-sm">
         <h3 className={`font-bold text-[#2D3436] mb-2 ${language === 'ar' ? 'text-xl text-right' : 'text-lg text-left'}`}>
           {language === 'en' ? 'Follow-Up Script' : 'نص المتابعة'}
         </h3>
@@ -119,7 +119,7 @@ export function ScriptPanel({ status, callbackDate, language = 'en', customerNam
   }
 
   return (
-    <div className="bg-gradient-to-br from-[#e3d8eb]/60 to-[#c7b1d7]/40 border-2 border-[#c7b1d7] rounded-xl p-5 shadow-sm">
+    <div className="bg-gradient-to-br from-[#e3d8eb]/60 to-[#c7b1d7]/40 border-2 border-[#c7b1d7]  p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className={`font-bold text-[#543b73] ${language === 'ar' ? 'text-xl text-right' : 'text-lg text-left'}`}>
           {language === 'en' ? 'Initial Outreach Script' : 'نص الاتصال الأولي'}
@@ -136,7 +136,7 @@ export function ScriptPanel({ status, callbackDate, language = 'en', customerNam
             <button
               key={category.id}
               onClick={() => setSelectedProduct(category.id)}
-              className={`p-2 rounded-lg border-2 text-xs font-medium transition-all duration-200 ${
+              className={`p-2  border-2 text-xs font-medium transition-all duration-200 ${
                 selectedProduct === category.id
                   ? 'border-[#886baa] bg-[#886baa] text-white shadow-md'
                   : 'border-[#c7b1d7] bg-white/80 text-[#543b73] hover:border-[#886baa] hover:bg-[#886baa]/10'
@@ -150,7 +150,7 @@ export function ScriptPanel({ status, callbackDate, language = 'en', customerNam
       </div>
 
       {/* Dynamic Script Content */}
-      <div className="bg-white/40 rounded-lg p-4 border border-[#c7b1d7]/30">
+      <div className="bg-white/40  p-4 border border-[#c7b1d7]/30">
         <p className={`text-[#543b73] leading-relaxed font-normal ${language === 'ar' ? 'text-xl' : 'text-base'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
           {getScriptContent(selectedProduct)[language]}
         </p>

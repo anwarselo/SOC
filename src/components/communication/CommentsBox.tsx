@@ -52,7 +52,7 @@ export function CommentsBox({ value, onChange, onSave, customerId = 'temp' }: Co
             value={value}
             onChange={(e) => handleTextChange(e.target.value)}
             placeholder="Add notes about this call... / أضف ملاحظات عن هذه المكالمة..."
-            className="w-full px-3 py-2 border border-[#EDEDEA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#5F9EA0] min-h-[100px] resize-y"
+            className="w-full px-3 py-2 border border-[#EDEDEA]  focus:outline-none focus:ring-2 focus:ring-[#5F9EA0] min-h-[100px] resize-y"
           />
           {/* Save button */}
           <div className="mt-2 flex items-center justify-between">
@@ -60,7 +60,7 @@ export function CommentsBox({ value, onChange, onSave, customerId = 'temp' }: Co
               type="button"
               onClick={handleSave}
               disabled={!value.trim()}
-              className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+              className={`px-4 py-2  font-medium transition-all flex items-center gap-2 ${
                 isSaved
                   ? 'bg-green-100 border-2 border-green-300 text-green-700'
                   : value.trim()
@@ -91,7 +91,7 @@ export function CommentsBox({ value, onChange, onSave, customerId = 'temp' }: Co
           <button
             type="button"
             onClick={() => setShowVoiceRecorder(true)}
-            className="w-full px-4 py-2 border-2 border-dashed border-[#B8D4D5] rounded-lg bg-[#F8FAFA] hover:bg-[#E8F4F5] text-[#2D3436] font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 border-2 border-dashed border-[#B8D4D5]  bg-[#F8FAFA] hover:bg-[#E8F4F5] text-[#2D3436] font-medium transition-colors flex items-center justify-center gap-2"
           >
             <span className="text-lg">🎤</span>
             <span className="text-sm">Add Voice Memo / أضف مذكرة صوتية</span>
@@ -112,7 +112,7 @@ export function CommentsBox({ value, onChange, onSave, customerId = 'temp' }: Co
         )}
 
         {voiceMemoUrl && (
-          <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md text-xs text-green-700">
+          <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200  text-xs text-green-700">
             <span>✓</span>
             <span>Voice memo attached / تم إرفاق مذكرة صوتية</span>
           </div>

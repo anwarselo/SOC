@@ -103,7 +103,17 @@ export function VoiceRecorder({ customerId, onRecordingComplete }: VoiceRecorder
       const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
       
       // Get user ID from localStorage
-      const userId = localStorage.getItem('userId') || 'unknown'
+      const userId = localStorage.getItem('userId')
+      
+      if (!userId) {
+        console.error('No user ID found in localStorage')
+        alert('Unable to save voice memo: User not authenticated')
+        return
+      }
+      
+      // Calculate audio duration and file size
+      const durationSeconds = Math.round(recordingTime)
+      const fileSizeBytes = blob.size
       
       // Save voice memo to database
       const { data, error } = await supabase
@@ -113,13 +123,15 @@ export function VoiceRecorder({ customerId, onRecordingComplete }: VoiceRecorder
           user_id: userId,
           audio_data: base64,
           content_type: 'audio/webm',
+          duration_seconds: durationSeconds,
+          file_size_bytes: fileSizeBytes,
           created_at: new Date().toISOString()
         })
         .select()
 
       if (error) {
         console.error('Database error:', error)
-        alert('Failed to save voice memo to database. Saved locally only.')
+        alert(`Failed to save voice memo to database: ${error.message}. Saved locally only.`)
         return
       }
 
@@ -150,7 +162,7 @@ export function VoiceRecorder({ customerId, onRecordingComplete }: VoiceRecorder
   }
 
   return (
-    <div className="border-2 border-[#B8D4D5] rounded-lg p-3 bg-[#F8FAFA]">
+    <div className="border-2 border-[#B8D4D5]  p-3 bg-[#F8FAFA]">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-[#2D3436]">Recording</span>
@@ -166,7 +178,7 @@ export function VoiceRecorder({ customerId, onRecordingComplete }: VoiceRecorder
         {!isRecording && !audioUrl && (
           <button
             onClick={startRecording}
-            className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white  font-medium transition-colors flex items-center justify-center gap-2"
           >
             <span className="text-lg">⏺</span>
             <span>Start Recording / ابدأ التسجيل</span>
@@ -177,14 +189,14 @@ export function VoiceRecorder({ customerId, onRecordingComplete }: VoiceRecorder
           <>
             <button
               onClick={pauseRecording}
-              className="flex-1 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white  font-medium transition-colors flex items-center justify-center gap-2"
             >
               <span className="text-lg">{isPaused ? '▶️' : '⏸'}</span>
               <span>{isPaused ? 'Resume / استئناف' : 'Pause / إيقاف مؤقت'}</span>
             </button>
             <button
               onClick={stopRecording}
-              className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white  font-medium transition-colors flex items-center justify-center gap-2"
             >
               <span className="text-lg">⏹</span>
               <span>Stop / إيقاف</span>
@@ -197,7 +209,7 @@ export function VoiceRecorder({ customerId, onRecordingComplete }: VoiceRecorder
             <audio controls src={audioUrl} className="flex-1" />
             <button
               onClick={deleteRecording}
-              className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+              className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white  transition-colors"
               disabled={isUploading}
             >
               🗑️

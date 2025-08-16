@@ -15,7 +15,7 @@ export function AppTopbar() {
     }
     // Default for calls and other pages
     return {
-      title: 'SedarOutreach',
+      title: 'Sedar Outreach',
       subtitle: 'Customer Relationship Management / إدارة علاقات العملاء'
     }
   }

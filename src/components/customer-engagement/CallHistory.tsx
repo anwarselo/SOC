@@ -55,7 +55,7 @@ export function CallHistory({ customerId }: CallHistoryProps) {
   }
 
   return (
-    <div className="mb-4 bg-[#F5F5F0] rounded-lg border border-[#EDEDEA] p-3">
+    <div className="mb-4 bg-[#F5F5F0]  border border-[#EDEDEA] p-3">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between text-sm font-medium text-[#2D3436] hover:text-[#5F9EA0] transition-colors"

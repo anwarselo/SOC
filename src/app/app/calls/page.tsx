@@ -274,10 +274,10 @@ export default function CallsPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       {/* Simplified Filter Tabs */}
       <div className="flex justify-center mb-12">
-        <div className="flex gap-1 bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+        <div className="flex gap-1 bg-white  p-1 shadow-sm border border-gray-200">
           <button
             onClick={() => handleViewChange('pending')}
-            className={`px-6 py-3 rounded-md font-medium transition-all ${
+            className={`px-6 py-3  font-medium transition-all ${
               view === 'pending'
                 ? 'bg-[#886baa] text-white shadow-sm'
                 : 'text-gray-600 hover:bg-gray-50'
@@ -287,7 +287,7 @@ export default function CallsPage() {
           </button>
           <button
             onClick={() => handleViewChange('callbacks')}
-            className={`px-6 py-3 rounded-md font-medium transition-all ${
+            className={`px-6 py-3  font-medium transition-all ${
               view === 'callbacks'
                 ? 'bg-[#886baa] text-white shadow-sm'
                 : 'text-gray-600 hover:bg-gray-50'
